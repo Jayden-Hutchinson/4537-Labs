@@ -1,0 +1,45 @@
+body {
+    padding: 0;
+    margin: 0;
+
+    font-family: sans-serif;
+    color: white;
+
+    background-color: black;
+}
+
+h1 {
+    font-size: 48px;
+}
+
+a {
+    font-size: 24px;
+}
+
+#root {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    height: 100vh;
+    width: 100vw;
+}
+
+#search-form,
+#store-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    width: 300px;
+}
+
+#store-word-input,
+#store-definition-input {
+    width: 100%;
+}
+
+#submit-button {
+    width: 100px;
+}
