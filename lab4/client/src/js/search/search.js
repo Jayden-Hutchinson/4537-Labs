@@ -7,18 +7,37 @@ class Search {
     this.root = document.getElementById(ID.ROOT);
     this.searchForm = new SearchForm();
 
+    this.definitionDiv = document.createElement('div');
+    this.definitionDiv.id = 'definition';
+
     this.searchForm.element.addEventListener(EVENT.SUBMIT, async (event) => {
       event.preventDefault();
       this.handleSubmit();
     });
 
-    root.appendChild(this.searchForm.element);
+    this.root.appendChild(this.searchForm.element);
+    this.root.appendChild(this.definitionDiv);
   }
 
   async handleSubmit() {
+    const definition = document.getElementById("definition");
     const word = this.searchForm.input.value;
-    const res = await ClientApi.search(word);
+
+    try {
+      const res = await ClientApi.search(word);
+      console.log('Search result:', res);
+
+      if (res && res.definition) {
+        definition.innerText = res.definition;
+      } else {
+        definition.innerText = "Definition not found";
+      }
+    } catch (error) {
+      console.error('Search error:', error);
+      definition.innerText = "Item not found";
+    }
   }
+
 }
 
 new Search().run();
