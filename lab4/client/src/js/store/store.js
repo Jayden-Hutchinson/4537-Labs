@@ -16,8 +16,8 @@ class Store {
   }
 
   async handleSubmit() {
-    const word = this.storeForm.wordInput; 
-    const definition = this.storeForm.definitionInput;
+    const word = this.storeForm.wordInput.value.trim();
+    const definition = this.storeForm.definitionInput.value.trim();
     const res = await ClientApi.store(word, definition);
     if (res) {
       console.log('Store results:', res);

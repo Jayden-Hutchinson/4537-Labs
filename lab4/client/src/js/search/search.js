@@ -21,7 +21,7 @@ class Search {
 
   async handleSubmit() {
     const definition = document.getElementById("definition");
-    const word = this.searchForm.input.value;
+    const word = this.searchForm.input.value.trim();
 
     try {
       const res = await ClientApi.search(word);

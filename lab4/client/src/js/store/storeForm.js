@@ -11,22 +11,22 @@ class StoreForm {
     this.element = document.createElement(ELEMENT.FORM);
     this.element.id = ID.STORE_FORM;
 
-    const wordInput = document.createElement(ELEMENT.INPUT);
-    wordInput.id = ID.STORE_WORD_INPUT;
+    this.wordInput = document.createElement(ELEMENT.INPUT);
+    this.wordInput.id = ID.STORE_WORD_INPUT;
 
-    const definitionInput = document.createElement(ELEMENT.TEXT_AREA);
-    definitionInput.id = ID.STORE_DEFINITION_INPUT;
-    definitionInput.rows = TEXT_AREA.ROWS;
-    definitionInput.style.resize = TEXT_AREA.RESIZE;
+    this.definitionInput = document.createElement(ELEMENT.TEXT_AREA);
+    this.definitionInput.id = ID.STORE_DEFINITION_INPUT;
+    this.definitionInput.rows = TEXT_AREA.ROWS;
+    this.definitionInput.style.resize = TEXT_AREA.RESIZE;
 
-    const submitButton = document.createElement(ELEMENT.BUTTON);
-    submitButton.id = ID.SUBMIT_BUTTON;
-    submitButton.textContent = TEXT_CONTENT.SUBMIT_BUTTON;
-    submitButton.type = TYPE.SUBMIT;
+    this.submitButton = document.createElement(ELEMENT.BUTTON);
+    this.submitButton.id = ID.SUBMIT_BUTTON;
+    this.submitButton.textContent = TEXT_CONTENT.SUBMIT_BUTTON;
+    this.submitButton.type = TYPE.SUBMIT;
 
-    this.element.appendChild(wordInput);
-    this.element.appendChild(definitionInput);
-    this.element.appendChild(submitButton);
+    this.element.appendChild(this.wordInput);
+    this.element.appendChild(this.definitionInput);
+    this.element.appendChild(this.submitButton);
   }
 }
 
