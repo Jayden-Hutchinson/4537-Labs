@@ -51,7 +51,11 @@ const server = http.createServer((req, res) => {
         if (word && definition) {
           items.push({ word, definition });
           res.writeHead(200, { "Content-Type": "text/plain" });
-          res.end(`Item "${word}" added successfully.`);
+          res.end(
+            `Successfully Stored.
+             Word: ${word}
+             Definition: ${definition}`
+          );
         } else {
           res.writeHead(400, { "Content-Type": "text/plain" });
           res.end("Word and definition parameters are required.");

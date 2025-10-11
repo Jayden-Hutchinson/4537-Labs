@@ -12,15 +12,14 @@ class Store {
       event.preventDefault();
       this.handleSubmit();
     });
-
   }
 
   async handleSubmit() {
-    const word = this.storeForm.wordInput.value.trim();
-    const definition = this.storeForm.definitionInput.value.trim();
-    const res = await ClientApi.store(word, definition);
+    const values = this.storeForm.getInputValues();
+    const res = await ClientApi.store(values.word, values.definition);
     if (res) {
-      console.log('Store results:', res);
+      console.log("Store results:", res);
+      this.storeForm.displayMessage(res.message);
     }
   }
 }

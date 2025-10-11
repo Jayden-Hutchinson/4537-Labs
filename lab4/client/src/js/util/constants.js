@@ -1,14 +1,25 @@
 export const PARAM = {
-  WORD: "word" 
-}
+  WORD: "word",
+};
+
+export const PLACEHOLDER = {
+  WORD: "Word",
+  DEFINITION: "Definition",
+};
+
 export const ID = {
   ROOT: "root",
+
   SEARCH_FORM: "search-form",
   SEARCH_INPUT: "search-input",
+  SEARCH_BUTTON: "search-button",
+
   STORE_FORM: "store-form",
   STORE_WORD_INPUT: "store-word-input",
   STORE_DEFINITION_INPUT: "store-definition-input",
-  SUBMIT_BUTTON: "submit-button",
+  STORE_BUTTON: "store-button",
+
+  DEFINITION: "definition",
 };
 
 export const CLASS_NAME = {};
