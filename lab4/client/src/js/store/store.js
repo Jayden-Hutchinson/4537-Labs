@@ -16,10 +16,15 @@ class Store {
 
   async handleSubmit() {
     const values = this.storeForm.getInputValues();
-    const res = await ClientApi.store(values.word, values.definition);
-    if (res) {
-      console.log("Store results:", res);
-      this.storeForm.displayMessage(res.message);
+    try {
+      const res = await ClientApi.store(values.word, values.definition);
+      if (res) {
+        console.log("Store results:", res);
+        this.storeForm.displayMessage(res.message);
+      }
+    } catch (err) {
+      console.log(err);
+      this.storeForm.displayMessage(err.message);
     }
   }
 }

@@ -19,8 +19,6 @@ class App {
     this.element.appendChild(searchLink);
     this.element.appendChild(storeLink);
   }
-
-  run() {}
 }
 
-new App().run();
+new App();
