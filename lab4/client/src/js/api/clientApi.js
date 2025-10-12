@@ -4,6 +4,7 @@ import POSTRequest from "./POSTRequest.js";
 class ClientApi {
   static async search(word) {
     const url = `${FULL_URL}/?name=${encodeURIComponent(word)}`;
+    console.log("Searching:", { word, url })
 
     try {
       const response = await fetch(url);
@@ -21,6 +22,7 @@ class ClientApi {
 
   static async store(word, definition) {
     const url = FULL_URL;
+    console.log("Storing", { word, definition, url })
     try {
       const response = await fetch(url, new POSTRequest(word, definition));
 
