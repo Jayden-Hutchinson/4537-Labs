@@ -140,9 +140,11 @@ class Server {
           console.log("Current items:", this.definitionList);
           res.writeHead(STATUS.SUCCESS, { "Content-Type": "text/plain" });
           res.end("Items printed to console.");
+          return;
         } else {
           res.writeHead(STATUS.NOT_FOUND, { "Content-Type": "text/plain" });
           res.end("Not Found");
+          return;
         }
       })
       .listen(PORT, () => {
