@@ -40,12 +40,10 @@ class Server {
 
         if (req.method === "GET") {
           const params = parsedUrl.query;
-
           const word = params.name;
 
-          const foundWord = this.definitionList.find(
-            (item) => item.word === word
-          );
+          const foundWord = this.getWord(word);
+
           if (!foundWord) {
             res.writeHead(STATUS.NOT_FOUND, {
               "Content-Type": "application/json",
@@ -119,6 +117,9 @@ class Server {
   }
 
   hasDefinition(word) {
+    return this.definitionList.find((item) => item.word === word);
+  }
+  getWord(word) {
     return this.definitionList.find((item) => item.word === word);
   }
 }

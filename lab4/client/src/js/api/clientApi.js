@@ -26,15 +26,16 @@ class ClientApi {
     try {
       const response = await fetch(url, new POSTRequest(word, definition));
 
-      console.log(response);
-
-      const responseText = await response.text();
-
-      if (response.ok) {
-        return { success: true, message: responseText };
+      if (!response.ok) {
+        const responseText = await response.text();
+        console.log("Server responded with", response.status, responseText);
+        return;
       }
+
+      const result = await response.text();
+      return { success: true, message: result };
     } catch (error) {
-      console.error("Store error:", error);
+      console.error("Fetch Failed:", error);
       throw error;
     }
   }

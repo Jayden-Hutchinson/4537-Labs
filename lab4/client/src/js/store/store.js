@@ -23,7 +23,7 @@ class Store {
         this.storeForm.displayMessage(res.message);
       }
     } catch (err) {
-      console.log(err);
+      // console.log(err);
       this.storeForm.displayMessage(err.message);
     }
   }
