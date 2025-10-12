@@ -6,6 +6,13 @@ const { STATUS } = require("./constants.js");
 
 const PORT = process.env.PORT || 3000;
 
+class Definition {
+  constructor({ word, definition }) {
+    this.word = word;
+    this.definition = definition
+  }
+}
+
 class Server {
   constructor() {
     this.definitionList = [];
@@ -42,7 +49,7 @@ class Server {
           const params = parsedUrl.query;
           const word = params.name;
 
-          const foundWord = this.getWord(word);
+          const foundWord = this.getDefinition(word);
 
           if (!foundWord) {
             res.writeHead(STATUS.NOT_FOUND, {
@@ -113,15 +120,15 @@ class Server {
   }
 
   addDefinition(word, definition) {
-    this.definitionList.push({ word, definition });
+    this.definitionList.push(new Definition(word, definition));
   }
 
   hasDefinition(word) {
-    return this.definitionList.find((item) => item.word === word);
+    return this.definitionList.find((definition) => definition.word === word);
   }
 
-  getWord(word) {
-    return this.definitionList.find((item) => item.word === word);
+  getDefinition(word) {
+    return this.definitionList.find((definition) => definition.word === word);
   }
 }
 new Server();
