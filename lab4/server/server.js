@@ -53,6 +53,7 @@ class Server {
         if (req.method === "OPTIONS") {
           res.writeHead(204);
           res.end();
+          return;
         }
 
         const parsedUrl = url.parse(req.url, true);
@@ -60,6 +61,7 @@ class Server {
         if (!path.startsWith(ENDPOINT)) {
           console.log("Path Error:", path);
           res.end();
+          return;
         }
 
         // Handle GET request to get a Definition
@@ -77,6 +79,7 @@ class Server {
               definition: null,
             });
             res.end(JSON.stringify(response));
+            return;
           } else {
             res.writeHead(STATUS.SUCCESS, {
               "Content-Type": "application/json",
@@ -84,6 +87,7 @@ class Server {
 
             const response = new Response(this.requestCount, foundDefinition);
             res.end(JSON.stringify(response));
+            return;
           }
         }
 
@@ -113,17 +117,20 @@ class Server {
                 this.addDefinition(word, definition);
                 res.writeHead(STATUS.SUCCESS, { "Content-Type": "text/plain" });
                 res.end(`Stored definition for ${word}`);
+                return;
               } else {
                 res.writeHead(STATUS.BAD_REQUEST, {
                   "Content-Type": "text/plain",
                 });
                 res.end("Word and definition parameters are required.");
+                return;
               }
             } catch (error) {
               res.writeHead(STATUS.BAD_REQUEST, {
                 "Content-Type": "text/plain",
               });
               res.end("Invalid request.");
+              return;
             }
           });
         }
