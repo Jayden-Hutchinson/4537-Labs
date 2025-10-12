@@ -1,11 +1,12 @@
 const http = require("http");
 const url = require("url");
-const { ENDPOINT } = require("../client/src/js/api/routes.js");
 
+const { ENDPOINT } = require("../client/src/js/api/routes.js");
 const { STATUS, REQUEST_TYPE } = require("./constants.js");
 
 const PORT = process.env.PORT || 3000;
 
+// The Object stored in the server definitionList
 class Definition {
   constructor(word, definition) {
     this.word = word;
@@ -13,19 +14,36 @@ class Definition {
   }
 }
 
+// The object that the server returns to the client
+class Response {
+  constructor(requestNumber, definition) {
+    this.requestNumber = requestNumber;
+    this.definition = definition;
+  }
+}
+
+// HTTP Server for the api
 class Server {
   constructor() {
-    this.definitionList = [];
+    // Pre load the server with 3 definitions ready to search
+    this.definitionList = [
+      new Definition("cat", "a small domesticated feline"),
+      new Definition("dog", "a loyal four-legged animal often kept as a pet"),
+      new Definition("bird", "a warm-blooded animal with feathers and wings"),
+    ];
+    // Keep track of the number of requests to the api
     this.requestCount = 0;
 
+    // Create the http server
     this.run();
   }
 
+  // Create the http server that handles GET and POST Requests
   run() {
     http
       .createServer((req, res) => {
-        this.requestCount++;
-        console.log(`Request #${this.requestCount}`);
+        this.incrementRequestCount();
+
         // CORS
         res.setHeader("Access-Control-Allow-Origin", "*");
         res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
@@ -39,16 +57,15 @@ class Server {
         const parsedUrl = url.parse(req.url, true);
         const path = parsedUrl.pathname;
         if (!path.startsWith(ENDPOINT)) {
-          console.log("PATH ERROR", path);
+          console.log("Path Error:", path);
           res.end();
         }
 
+        // Handle GET request to get a Definition
         if (req.method === REQUEST_TYPE.GET) {
-          const params = parsedUrl.query;
-          const word = params.name;
+          const word = parsedUrl.query.word;
 
           const foundDefinition = this.getDefinition(word);
-          console.log(foundDefinition);
 
           if (!foundDefinition) {
             res.writeHead(STATUS.NOT_FOUND, {
@@ -59,7 +76,9 @@ class Server {
             res.writeHead(STATUS.SUCCESS, {
               "Content-Type": "application/json",
             });
-            res.end(JSON.stringify(foundDefinition));
+
+            const response = new Response(this.requestCount, foundDefinition);
+            res.end(JSON.stringify(response));
           }
         }
 
@@ -132,6 +151,11 @@ class Server {
 
   getDefinition(word) {
     return this.definitionList.find((definition) => definition.word === word);
+  }
+
+  incrementRequestCount() {
+    this.requestCount++;
+    console.log(`Request #${this.requestCount}`);
   }
 }
 new Server();

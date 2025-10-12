@@ -1,5 +1,6 @@
-import { ID, ELEMENT, TYPE } from "../util/constants.js";
-import { TEXT_CONTENT } from "../../lang/en/user.js";
+import { ID, ELEMENT, TYPE, EVENT } from "../util/constants.js";
+import { MESSAGE, TEXT_CONTENT } from "../../lang/en/user.js";
+import ClientApi from "../api/clientApi.js";
 
 class SearchForm {
   constructor() {
@@ -20,6 +21,38 @@ class SearchForm {
     this.element.appendChild(this.message);
     this.element.appendChild(this.wordInput);
     this.element.appendChild(this.searchButton);
+    this.element.addEventListener(EVENT.SUBMIT, async (event) => {
+      event.preventDefault();
+      this.handleSubmit();
+    });
+  }
+
+  async handleSubmit() {
+    console.log("Handle Submit");
+    const word = this.getInputValue();
+
+    if (!word) {
+      this.displayMessage(MESSAGE.SEARCH_FORM.NO_WORD_VALUE);
+      return;
+    }
+
+    console.log("word:", word);
+    try {
+      const res = await ClientApi.search(word);
+
+      if (!res) {
+        this.displayMessage(MESSAGE.SEARCH_FORM.DEFINITION_NOT_FOUND);
+        return;
+      }
+
+      this.displayMessage(
+        `Request ${res.requestNumber}: 
+        
+        ${MESSAGE.SEARCH_FORM.WORD_DEFINITION(res.definition)}`
+      );
+    } catch (error) {
+      this.displayMessage(MESSAGE.SEARCH_FORM.DEFINITION_NOT_FOUND);
+    }
   }
 
   displayMessage(message) {
