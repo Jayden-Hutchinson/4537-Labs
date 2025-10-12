@@ -1,7 +1,7 @@
 const http = require("http");
 const url = require("url");
 
-const { ENDPOINT } = require("../client/src/js/api/routes.js");
+const { ENDPOINT } = require("./constants.js");
 const { STATUS, REQUEST_TYPE } = require("./constants.js");
 
 const PORT = process.env.PORT || 3000;
