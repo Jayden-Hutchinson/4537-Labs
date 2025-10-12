@@ -1,15 +1,15 @@
 const http = require("http");
 const url = require("url");
-const routes = require("../client/src/js/api/routes.js");
+const { ENDPOINT } = require("../client/src/js/api/routes.js");
 
-const { STATUS } = require("./constants.js");
+const { STATUS, REQUEST_TYPE } = require("./constants.js");
 
 const PORT = process.env.PORT || 3000;
 
 class Definition {
-  constructor({ word, definition }) {
+  constructor(word, definition) {
     this.word = word;
-    this.definition = definition
+    this.definition = definition;
   }
 }
 
@@ -38,20 +38,19 @@ class Server {
 
         const parsedUrl = url.parse(req.url, true);
         const path = parsedUrl.pathname;
-
-        // Handle GET request to fetch item definition
-        if (!path.startsWith(routes.ENDPOINT)) {
+        if (!path.startsWith(ENDPOINT)) {
           console.log("PATH ERROR", path);
-          return;
+          res.end();
         }
 
-        if (req.method === "GET") {
+        if (req.method === REQUEST_TYPE.GET) {
           const params = parsedUrl.query;
           const word = params.name;
 
-          const foundWord = this.getDefinition(word);
+          const foundDefinition = this.getDefinition(word);
+          console.log(foundDefinition);
 
-          if (!foundWord) {
+          if (!foundDefinition) {
             res.writeHead(STATUS.NOT_FOUND, {
               "Content-Type": "application/json",
             });
@@ -60,12 +59,12 @@ class Server {
             res.writeHead(STATUS.SUCCESS, {
               "Content-Type": "application/json",
             });
-            res.end(JSON.stringify(foundWord));
+            res.end(JSON.stringify(foundDefinition));
           }
         }
 
         // Handle POST request to add a new item
-        else if (req.method === "POST") {
+        else if (req.method === REQUEST_TYPE.POST) {
           let query = "";
 
           req.on("data", (chunk) => {
@@ -104,6 +103,7 @@ class Server {
             }
           });
         }
+
         //FOR TESTING PURPOSES
         else if (req.method === "GET" && path === "/print") {
           console.log("Current items:", this.definitionList);
@@ -120,7 +120,10 @@ class Server {
   }
 
   addDefinition(word, definition) {
-    this.definitionList.push(new Definition(word, definition));
+    console.log(word, definition);
+    const newEntry = new Definition(word, definition);
+    this.definitionList.push(newEntry);
+    console.log(this.definitionList);
   }
 
   hasDefinition(word) {
