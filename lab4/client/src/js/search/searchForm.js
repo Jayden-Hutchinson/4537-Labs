@@ -21,6 +21,7 @@ class SearchForm {
     this.element.appendChild(this.wordInput);
     this.element.appendChild(this.searchButton);
   }
+
   displayMessage(message) {
     this.message.innerText = message;
   }

@@ -13,26 +13,34 @@ class Search {
 
     this.searchForm.element.addEventListener(EVENT.SUBMIT, async (event) => {
       event.preventDefault();
-      this.handleSubmit();
+      const word = this.searchForm.getInputValue();
+
+      if (!word) {
+        this.searchForm.displayMessage(MESSAGE.SEARCH_FORM.NO_WORD_VALUE)
+        return;
+      }
+
+      this.handleSubmit(word);
     });
 
     this.root.appendChild(this.definition);
     this.root.appendChild(this.searchForm.element);
   }
 
-  async handleSubmit() {
-    const word = this.searchForm.getInputValue();
+  async handleSubmit(word) {
+
     try {
       const res = await ClientApi.search(word);
 
-      console.log("Search result:", res);
 
-      if (res && res.definition) {
-        const message = `${res.word}: ${res.definition}`
-        this.searchForm.displayMessage(message);
+      if (!res) {
+        this.searchForm.displayMessage(MESSAGE.SEARCH_FORM.DEFINITION_NOT_FOUND)
+        return
       }
+
+      this.searchForm.displayMessage(MESSAGE.SEARCH_FORM.WORD_DEFINITION(res));
+
     } catch (error) {
-      console.error("Search error:", error);
       this.searchForm.displayMessage(MESSAGE.SEARCH.DEFINITION_NOT_FOUND);
     }
   }

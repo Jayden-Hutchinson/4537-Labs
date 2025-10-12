@@ -1,6 +1,7 @@
 import StoreForm from "./storeForm.js";
-import { ID } from "../util/constants.js";
+import { EVENT, ID } from "../util/constants.js";
 import ClientApi from "../api/clientApi.js";
+import { MESSAGE } from "../../lang/en/user.js";
 
 class Store {
   run() {
@@ -8,19 +9,24 @@ class Store {
     this.storeForm = new StoreForm();
     this.root.appendChild(this.storeForm.element);
 
-    this.storeForm.element.addEventListener("submit", async (event) => {
+    this.storeForm.element.addEventListener(EVENT.SUBMIT, async (event) => {
       event.preventDefault();
-      this.handleSubmit();
+      const values = this.storeForm.getInputValues();
+
+      if (!values) {
+        this.storeForm.displayMessage(MESSAGE.STORE_FORM.NO_VALUES)
+        return;
+      }
+
+      this.handleSubmit(values);
     });
   }
 
-  async handleSubmit() {
-    const values = this.storeForm.getInputValues();
+  async handleSubmit(values) {
     try {
       const res = await ClientApi.store(values.word, values.definition);
       this.storeForm.displayMessage(res.message);
     } catch (err) {
-      // console.log(err);
       this.storeForm.displayMessage(err.message);
     }
   }
