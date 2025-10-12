@@ -10,6 +10,7 @@ class ClientApi {
 
     try {
       const response = await fetch(url);
+
       if (response.ok) {
         const data = await response.json();
         return data;
@@ -21,15 +22,15 @@ class ClientApi {
   }
 
   static async store(word, definition) {
-    const url = FULL_URL;
     console.log("Storing:", { word, definition });
+
+    const url = FULL_URL;
     try {
       const response = await fetch(url, new POSTRequest(word, definition));
 
       if (!response.ok) {
         const responseText = await response.text();
-        console.log("Server responded with", response.status, responseText);
-        return;
+        return { success: false, message: responseText };
       }
 
       const result = await response.text();

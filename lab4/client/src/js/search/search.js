@@ -28,7 +28,8 @@ class Search {
       console.log("Search result:", res);
 
       if (res && res.definition) {
-        this.searchForm.displayMessage(res.definition);
+        const message = `${res.word}: ${res.definition}`
+        this.searchForm.displayMessage(message);
       }
     } catch (error) {
       console.error("Search error:", error);

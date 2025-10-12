@@ -119,6 +119,7 @@ class Server {
   hasDefinition(word) {
     return this.definitionList.find((item) => item.word === word);
   }
+
   getWord(word) {
     return this.definitionList.find((item) => item.word === word);
   }
