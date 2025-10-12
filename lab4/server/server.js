@@ -16,8 +16,9 @@ class Definition {
 
 // The object that the server returns to the client
 class Response {
-  constructor(requestNumber, definition) {
+  constructor(requestNumber, { word, definition }) {
     this.requestNumber = requestNumber;
+    this.word = word;
     this.definition = definition;
   }
 }
@@ -71,7 +72,11 @@ class Server {
             res.writeHead(STATUS.NOT_FOUND, {
               "Content-Type": "application/json",
             });
-            res.end(JSON.stringify({ error: "Item not found" }));
+            const response = new Response(this.requestCount, {
+              word: word,
+              definition: null,
+            });
+            res.end(JSON.stringify(response));
           } else {
             res.writeHead(STATUS.SUCCESS, {
               "Content-Type": "application/json",

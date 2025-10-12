@@ -8,11 +8,11 @@ export const TEXT_CONTENT = {
 
 export const MESSAGE = {
   SEARCH_FORM: {
-    WORD_DEFINITION: ({ word, definition }) => `${word}: ${definition}`,
+    WORD_DEFINITION: (word, definition) => `${word}: ${definition}`,
     DEFINITION_NOT_FOUND: "Definition not found",
-    NO_WORD_VALUE: "Enter word"
+    NO_WORD_VALUE: "Enter word",
   },
   STORE_FORM: {
-    NO_VALUES: "Enter a word and definition"
+    NO_VALUES: "Enter a word and definition",
   },
 };

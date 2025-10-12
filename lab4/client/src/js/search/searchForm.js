@@ -39,16 +39,21 @@ class SearchForm {
     console.log("word:", word);
     try {
       const res = await ClientApi.search(word);
+      console.log(res);
 
-      if (!res) {
-        this.displayMessage(MESSAGE.SEARCH_FORM.DEFINITION_NOT_FOUND);
+      if (!res.definition) {
+        this.displayMessage(
+          `Request ${res.requestNumber}
+          
+          ${word}: ${MESSAGE.SEARCH_FORM.DEFINITION_NOT_FOUND}`
+        );
         return;
       }
 
       this.displayMessage(
         `Request ${res.requestNumber}: 
         
-        ${MESSAGE.SEARCH_FORM.WORD_DEFINITION(res.definition)}`
+        ${MESSAGE.SEARCH_FORM.WORD_DEFINITION(res.word, res.definition)}`
       );
     } catch (error) {
       this.displayMessage(MESSAGE.SEARCH_FORM.DEFINITION_NOT_FOUND);
