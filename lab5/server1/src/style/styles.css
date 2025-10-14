@@ -1,0 +1,50 @@
+body {
+  padding: 0;
+  margin: 0;
+
+  font-family: sans-serif;
+  color: lightgrey;
+
+  background-color: rgb(13, 13, 15);
+}
+
+h1 {
+  font-size: 48px;
+}
+
+a {
+  font-size: 24px;
+  margin-bottom: 2rem;
+}
+
+textarea {
+  font-family: sans-serif;
+  color: lightgrey;
+
+  padding: 10px;
+  background-color: rgb(48, 48, 48);
+  border-radius: 5px;
+  border: none;
+}
+
+textarea:focus {
+  border: none;
+  outline: none;
+}
+
+button {
+  background-color: rgb(107, 124, 165);
+  border: none;
+  border-radius: 10px;
+  padding: 10px;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  height: 100vh;
+  width: 100vw;
+}
