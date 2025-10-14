@@ -1,13 +1,13 @@
 export const SERVER = {
     PORT: 3000,
     ENDPOINT: {
-        insert: "/db/insert",
-        select: "/db/select"
+        INSERT: "/db/insert",
+        SELECT: "/db/select"
     },
 
     HEADERS: {
         "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": Object.values(RequestType).join(", "),
+        "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
         "Access-Control-Allow-Headers": "Content-Type",
     },
 
@@ -25,5 +25,4 @@ export const SERVER = {
         POST: "POST",
         OPTIONS: "OPTIONS"
     }),
-
 }
