@@ -1,30 +1,31 @@
-export const ID = {
-  root: "root",
-};
-
 export const ELEMENT = {
-  textArea: "textarea",
-  button: "button",
-  form: "form",
-  div: "div",
+  TAG: {
+    TEXT_AREA: "textarea",
+    BUTTON: "button",
+    FORM: "form",
+    DIV: "div",
+  },
+
+  EVENT: {
+    SUBMIT: "submit"
+  },
+
+  TYPE: {
+    SUBMIT: "submit"
+  },
+
+  ID: {
+    ROOT: "root"
+  },
+
+  CLASS_NAME: {
+    SQL_FORM: "sql-form",
+    DATA_BUTTON: "data-button",
+    MESSAGE: "message",
+  },
 };
 
-export const CLASS_NAME = {
-  sqlForm: "sql-form",
-  dataButton: "data-button",
-  message: "message",
-};
-
-export const EVENT = {
-  submit: "submit",
-};
-
-export const TYPE = {
-  submit: "submit"
+export const REQUEST_TYPE = {
+  GET: "GET",
+  POST: "POST"
 }
-
-export const METHOD = {
-  get: "GET",
-  post: "POST"
-}
-

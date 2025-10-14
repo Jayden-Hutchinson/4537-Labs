@@ -1,9 +1,9 @@
-import { ID } from "./js/constants.js";
+import { ELEMENT } from "./js/constants.js";
 import ElementFactory from "./js/ElementFactory.js";
 
 class Client {
   constructor() {
-    this.element = document.getElementById(ID.root);
+    this.element = document.getElementById(ELEMENT.ID.ROOT);
 
     this.sqlTextArea = ElementFactory.createSqlTextArea();
     this.dataButton = ElementFactory.createDataButton();
