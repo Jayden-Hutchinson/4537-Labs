@@ -58,8 +58,14 @@ class Server {
     }
 
     handleGetRequest = (req, res) => {
-        console.log("GET Request", req)
-        res.end("GET response from server")
+        console.log("GET Request", req.url)
+
+        if (req.method != REQUEST_TYPE.GET) {
+            res.writeHead(STATUS.METHOD_NOT_ALLOWED)
+            res.end(`${req.method} not allowed at ${req.url}`)
+            return;
+        }
+        res.end(`GET response from server`)
     }
 
     handlePostRequest = (req, res) => {
