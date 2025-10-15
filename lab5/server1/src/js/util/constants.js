@@ -1,4 +1,4 @@
-export const ELEMENT = {
+export const HTML = {
   TAG: {
     TEXT_AREA: "textarea",
     BUTTON: "button",
@@ -7,15 +7,16 @@ export const ELEMENT = {
   },
 
   EVENT: {
-    SUBMIT: "submit"
+    SUBMIT: "submit",
+    CLICK: "click",
   },
 
   TYPE: {
-    SUBMIT: "submit"
+    SUBMIT: "submit",
   },
 
   ID: {
-    ROOT: "root"
+    ROOT: "root",
   },
 
   CLASS_NAME: {
@@ -27,5 +28,5 @@ export const ELEMENT = {
 
 export const REQUEST_TYPE = {
   GET: "GET",
-  POST: "POST"
-}
+  POST: "POST",
+};
