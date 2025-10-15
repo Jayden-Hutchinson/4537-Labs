@@ -1,9 +1,9 @@
-import { EVENT, ID } from "./constants.js";
+import { ELEMENT } from "./util/constants.js";
 import ElementFactory from "./ElementFactory.js";
 
 class Client {
   constructor() {
-    this.element = document.getElementById(ID.root);
+    this.element = document.getElementById(ELEMENT.ID.ROOT);
 
     this.sqlForm = ElementFactory.createSqlForm();
     this.dataButton = ElementFactory.createDataButton();
@@ -13,9 +13,12 @@ class Client {
     this.element.appendChild(this.sqlForm);
     this.element.appendChild(this.message);
 
-    this.sqlForm.addEventListener(EVENT.submit, (event) => {
+    this.sqlForm.addEventListener(ELEMENT.EVENT.SUBMIT, async (event) => {
       event.preventDefault();
-      console.log(this.sqlForm);
+      console.log("Submit Event");
+
+      const json = await fetch("http://localhost:3000/api/db/select").then(res => res.json())
+      this.message.textContent = json
     });
   }
 }

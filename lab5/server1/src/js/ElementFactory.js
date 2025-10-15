@@ -1,5 +1,5 @@
 import { UI_TEXT } from "../lang/en/user.js";
-import { ELEMENT, REQUEST_TYPE } from "./constants.js";
+import { ELEMENT, REQUEST_TYPE } from "./util/constants.js";
 
 class ElementFactory {
   static createSqlForm() {

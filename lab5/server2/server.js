@@ -1,96 +1,63 @@
 
 const http = require("http");
 const url = require("url");
-const { } = require("./src/js/constants")
 
-
-const PORT = 3000
-const listenMessage = `Server running on https://localhost:${PORT}`
-
-const ENDPOINT = {
-    INSERT: "/db/insert",
-    SELECT: "/db/select"
-}
-
-const REQUEST_TYPE = Object.freeze({
-    GET: "GET",
-    POST: "POST",
-    OPTIONS: "OPTIONS"
-})
-
-const HEADERS = {
-    "Access-Control-Allow-Origin": "*",
-    "Access-Control-Allow-Methods": Object.entries(REQUEST_TYPE).join(", "),
-    "Access-Control-Allow-Headers": "Content-Type",
-}
-
-const STATUS = Object.freeze({
-    OK: 200,
-    NO_CONTENT: 204,
-    BAD_REQUEST: 400,
-    NOT_FOUND: 404,
-    METHOD_NOT_ALLOWED: 405,
-    INTERNAL_ERROR: 500,
-})
-
+// Server configuraion constants
+const config = require("./src/js/config")
 
 class Server {
     constructor() {
+        // Handle the request received from the client based on the url
         this.handlers = {
-            [REQUEST_TYPE.GET]: this.handleGetRequest,
-            [REQUEST_TYPE.POST]: this.handlePostRequest,
+            [config.ENDPOINT.INSERT]: this.handleSqlInsert,
+            [config.ENDPOINT.SELECT]: this.handleSqlSelect,
         }
 
+        // Create the http server that handles the requests from the browser
         http.createServer((req, res) => {
+            console.log("Request URL:", req.url)
+
             this.setHeaders(res)
 
-            const handler = this.handlers[req.method];
+            // Get the handler function for the request url
+            const handler = this.handlers[req.url];
+            console.log("Request Handler:", handler)
 
+            // if no handler return a message 
             if (!handler) {
-                res.writeHead(STATUS.METHOD_NOT_ALLOWED)
+                res.writeHead(config.STATUS.METHOD_NOT_ALLOWED)
                 res.end("Method not allowed")
                 return;
             }
 
+            // handle the request with the chosen handler function
             handler(req, res);
 
-        }).listen(PORT, () => console.log(listenMessage))
+        }).listen(config.PORT, () => console.log(config.listenMessage))
     }
 
-    handleGetRequest = (req, res) => {
-        console.log("GET Request", req.url)
-
-        if (req.method != REQUEST_TYPE.GET) {
-            res.writeHead(STATUS.METHOD_NOT_ALLOWED)
+    // Handle the request that inserts into the api database using sql
+    handleSqlInsert = (req, res) => {
+        if (req.method != config.REQUEST_TYPE.GET) {
+            res.writeHead(config.STATUS.METHOD_NOT_ALLOWED)
             res.end(`${req.method} not allowed at ${req.url}`)
             return;
         }
-        res.end(`GET response from server`)
+        res.end("GET response from server")
     }
 
-    handlePostRequest = (req, res) => {
-        console.log("POST Request", req)
+    // Handle the request that selects data from the api database using sql
+    handleSqlSelect = (req, res) => {
+        console.log("Sql Select", req.url)
+        res.end(JSON.stringify("Message sent from server.js"))
     }
 
-    handleOptionsRequest = (req, res) => {
-        console.log("OPTIONS Request", req)
-    }
-
+    // Set the headers for CORS in the http server
     setHeaders(res) {
-        for (const [key, value] of Object.entries(HEADERS)) {
+        for (const [key, value] of Object.entries(config.HEADERS)) {
             res.setHeader(key, value)
         }
     }
-
-    isPostRequest({ method }) {
-        return method === REQUEST_TYPE.POST;
-    }
-
-    isGetRequest({ method }) {
-        return method === REQUEST_TYPE.GET;
-    }
-
-
 }
 
 new Server();
