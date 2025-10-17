@@ -37,6 +37,11 @@ class Server {
           return;
         }
 
+        if (req.method === "OPTIONS") {
+          res.writeHead(204);
+          res.end();
+          return;
+        }
         // handle the request with the chosen handler function
         handler(req, res);
       })
@@ -76,40 +81,62 @@ class Server {
   };
 
   // Handle the request that inserts into the api database using sql
-  handleSqlInsert = (req, res) => {
-    console.log(req.url);
-    // api/db/insert
+handleSqlInsert = (req, res) => {
+  if (req.method !== config.REQUEST_TYPE.POST) {
+    res.writeHead(config.STATUS.METHOD_NOT_ALLOWED, {
+      "Content-Type": "text/plain",
+    });
+    res.end(`${req.method} not allowed at ${req.url}`);
+    return;
+  }
 
-    if (req.method != config.REQUEST_TYPE.POST) {
-      res.writeHead(config.STATUS.METHOD_NOT_ALLOWED, {
-        "Content-Type": "text/json",
-      });
+  let body = "";
 
-      res.end(`${req.method} not allowed at ${req.url}`);
-      return;
-    }
+  req.on("data", (chunk) => {
+    body += chunk;
+  });
 
+  req.on("end", () => {
     try {
-      const sql = req.sql;
+      const sql = body.trim(); // plain text SQL
+
+      console.log("Received SQL:", sql);
+
       this.database.connection.query(sql, (err, result) => {
         if (err) {
-          throw err;
+          console.log(err);
+          res.writeHead(config.STATUS.INTERNAL_ERROR, {
+            "Content-Type": "text/plain",
+          });
+          res.end(`SQL Error: ${err.message}`);
+          return;
         }
-        console.log(result);
-      });
 
-      res.writeHead(config.STATUS.OK);
-      res.end(`${sql} executed.`);
+        console.log(result);
+        res.writeHead(config.STATUS.OK, {
+          "Content-Type": "text/plain",
+        });
+        res.end("SQL executed successfully.");
+      });
     } catch (err) {
       console.log(err);
       res.writeHead(config.STATUS.INTERNAL_ERROR, {
-        "Content-Type": "text/json",
+        "Content-Type": "text/plain",
       });
-      res.end("Failed to insert predefined data.");
+      res.end("Failed to execute SQL.");
     }
+  });
 
-    res.end("POST response from server");
-  };
+  req.on("error", (err) => {
+    console.log(err);
+    res.writeHead(config.STATUS.INTERNAL_ERROR, {
+      "Content-Type": "text/plain",
+    });
+    res.end("Request body error.");
+  });
+};
+
+
 
   // Handle the request that selects data from the api database using sql
   handleSqlSelect = (req, res) => {

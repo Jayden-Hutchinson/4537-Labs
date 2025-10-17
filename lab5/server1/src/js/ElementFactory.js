@@ -7,14 +7,14 @@ class ElementFactory {
     form.className = HTML.CLASS_NAME.SQL_FORM;
     form.method = REQUEST_TYPE.POST;
 
-    const textArea = document.createElement(HTML.TAG.TEXT_AREA);
-    textArea.placeHolder = UI_TEXT.textAreaPlaceholder;
-
+    form.textArea = document.createElement(HTML.TAG.TEXT_AREA);
+    form.textArea.placeHolder = UI_TEXT.textAreaPlaceholder;
+    
     const submitButton = document.createElement(HTML.TAG.BUTTON);
     submitButton.textContent = UI_TEXT.submitButton;
     submitButton.type = HTML.TYPE.SUBMIT;
 
-    form.appendChild(textArea);
+    form.appendChild(form.textArea);
     form.appendChild(submitButton);
     return form;
   }
