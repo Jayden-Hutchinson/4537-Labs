@@ -4,7 +4,8 @@ const listenMessage = `Server running on http://localhost:${PORT}`
 
 const ENDPOINT = {
     INSERT: "/api/db/insert",
-    SELECT: "/api/db/select"
+    SELECT: "/api/db/select",
+    PREDEF_DATA: "/api/db/predef"
 }
 
 const REQUEST_TYPE = Object.freeze({

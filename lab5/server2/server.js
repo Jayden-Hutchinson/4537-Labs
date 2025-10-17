@@ -1,6 +1,7 @@
 const http = require("http");
 const url = require("url");
 const Database = require("./src/js/Database")
+const fs = require("fs")
 
 // Server configuraion constants
 const config = require("./src/js/config");
@@ -14,6 +15,7 @@ class Server {
     // Handle the request received from the client based on the url
     this.handlers = {
       [config.ENDPOINT.INSERT]: this.handleSqlInsert,
+      [config.ENDPOINT.PREDEF_DATA]: this.handleInsertSqlButton,
       [config.ENDPOINT.SELECT]: this.handleSqlSelect,
     };
 
@@ -42,20 +44,26 @@ class Server {
   }
 
   handleInsertSqlButton = async (req, res) => {
+    debugger
     if (req.method != config.REQUEST_TYPE.POST) {
-      res.writeHead(config.STATUS.METHOD_NOT_ALLOWED, {"Content-Type": "text/plain"});
+      res.writeHead(config.STATUS.METHOD_NOT_ALLOWED, {"Content-Type": "text/json"});
       res.end(`${req.method} not allowed at ${req.url}`);
       return;
     }
 
     try {
-      const sql = fs.readFileSync(path.join(__dirname, "insertData.sql"), "utf-8");
-      await this.database.query(sql);
+      const sql = fs.readFileSync(path.join(__dirname, "insertData.txt"), "utf-8");
+      this.database.connection.query(sql, (err, res) => {
+        if (err){
+          throw err
+        }
+        console.log(res)
+      });
       res.writeHead(config.STATUS.OK);
       res.end("Predefined data inserted successfully");
     } catch (err) {
       console.log(err);
-      res.writeHead(config.STATUS.INTERNAL_ERROR, {"Content-Type": "text/plain"});
+      res.writeHead(config.STATUS.INTERNAL_ERROR, {"Content-Type": "text/json"});
       res.end("Failed to insert predefined data.")
     }
   };
@@ -63,7 +71,7 @@ class Server {
   // Handle the request that inserts into the api database using sql
   handleSqlInsert = (req, res) => {
     if (req.method != config.REQUEST_TYPE.GET) {
-      res.writeHead(config.STATUS.METHOD_NOT_ALLOWED, {"Content-Type": "text/plain"});
+      res.writeHead(config.STATUS.METHOD_NOT_ALLOWED, {"Content-Type": "text/json"});
       res.end(`${req.method} not allowed at ${req.url}`);
       return;
     }

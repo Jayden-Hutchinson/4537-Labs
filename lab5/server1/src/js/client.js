@@ -17,7 +17,7 @@ class Client {
       //send a post request to the server
       event.preventDefault();
       try {
-        const res = await fetch("http://localhost:3000/api/db/insert", {
+        const res = await fetch("http://localhost:3000/api/db/predef", {
           method: "POST"
         });
         
@@ -26,8 +26,8 @@ class Client {
           throw new Error(`Server error: ${text}`);
         }
         
-        const result = await res.json();
-        this.message.textContent = result.message;
+        const result = await res.text();
+        this.message.textContent = result;
 
       } catch (err) {
         console.error("Error:", err);
@@ -38,7 +38,12 @@ class Client {
     this.sqlForm.addEventListener(HTML.EVENT.SUBMIT, async (event) => {
       event.preventDefault();
       console.log("Submit Event");
+      //pasrse thje nipt
 
+      // if insert do insert logic
+      // else do select logic 
+      // finally do you cant do that bro bro
+      
       const json = await fetch("http://localhost:3000/api/db/select").then(
         (res) => res.json()
       );
