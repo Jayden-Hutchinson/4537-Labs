@@ -81,67 +81,115 @@ class Server {
   };
 
   // Handle the request that inserts into the api database using sql
-handleSqlInsert = (req, res) => {
-  if (req.method !== config.REQUEST_TYPE.POST) {
-    res.writeHead(config.STATUS.METHOD_NOT_ALLOWED, {
-      "Content-Type": "text/plain",
+  handleSqlInsert = (req, res) => {
+    if (req.method !== config.REQUEST_TYPE.POST) {
+      res.writeHead(config.STATUS.METHOD_NOT_ALLOWED, {
+        "Content-Type": "text/plain",
+      });
+      res.end(`${req.method} not allowed at ${req.url}`);
+      return;
+    }
+
+    let body = "";
+
+    req.on("data", (chunk) => {
+      body += chunk;
     });
-    res.end(`${req.method} not allowed at ${req.url}`);
-    return;
-  }
 
-  let body = "";
+    req.on("end", () => {
+      try {
+        const sql = body.trim(); // plain text SQL
 
-  req.on("data", (chunk) => {
-    body += chunk;
-  });
+        console.log("Received SQL:", sql);
 
-  req.on("end", () => {
-    try {
-      const sql = body.trim(); // plain text SQL
+        this.database.connection.query(sql, (err, result) => {
+          if (err) {
+            console.log(err);
+            res.writeHead(config.STATUS.INTERNAL_ERROR, {
+              "Content-Type": "text/plain",
+            });
+            res.end(`SQL Error: ${err.message}`);
+            return;
+          }
 
-      console.log("Received SQL:", sql);
-
-      this.database.connection.query(sql, (err, result) => {
-        if (err) {
-          console.log(err);
-          res.writeHead(config.STATUS.INTERNAL_ERROR, {
+          console.log(result);
+          res.writeHead(config.STATUS.OK, {
             "Content-Type": "text/plain",
           });
-          res.end(`SQL Error: ${err.message}`);
-          return;
-        }
-
-        console.log(result);
-        res.writeHead(config.STATUS.OK, {
+          res.end("SQL executed successfully.");
+        });
+      } catch (err) {
+        console.log(err);
+        res.writeHead(config.STATUS.INTERNAL_ERROR, {
           "Content-Type": "text/plain",
         });
-        res.end("SQL executed successfully.");
-      });
-    } catch (err) {
+        res.end("Failed to execute SQL.");
+      }
+    });
+
+    req.on("error", (err) => {
       console.log(err);
       res.writeHead(config.STATUS.INTERNAL_ERROR, {
         "Content-Type": "text/plain",
       });
-      res.end("Failed to execute SQL.");
-    }
-  });
-
-  req.on("error", (err) => {
-    console.log(err);
-    res.writeHead(config.STATUS.INTERNAL_ERROR, {
-      "Content-Type": "text/plain",
+      res.end("Request body error.");
     });
-    res.end("Request body error.");
-  });
-};
-
-
+  };
 
   // Handle the request that selects data from the api database using sql
   handleSqlSelect = (req, res) => {
-    console.log("Sql Select", req.url);
-    res.end(JSON.stringify("Message sent from server.js"));
+    if (req.method !== config.REQUEST_TYPE.GET) {
+      res.writeHead(config.STATUS.METHOD_NOT_ALLOWED, {
+        "Content-Type": "text/plain",
+      });
+      res.end(`${req.method} not allowed at ${req.url}`);
+      return;
+    }
+
+    let body = "";
+
+    req.on("data", (chunk) => {
+      body += chunk;
+    });
+
+    req.on("end", () => {
+      try {
+        const sql = body.trim(); // plain text SQL
+
+        console.log("Received SQL:", sql);
+
+        this.database.connection.query(sql, (err, result) => {
+          if (err) {
+            console.log(err);
+            res.writeHead(config.STATUS.INTERNAL_ERROR, {
+              "Content-Type": "text/plain",
+            });
+            res.end(`SQL Error: ${err.message}`);
+            return;
+          }
+
+          console.log(result);
+          res.writeHead(config.STATUS.OK, {
+            "Content-Type": "text/plain",
+          });
+          res.end("SQL executed successfully.");
+        });
+      } catch (err) {
+        console.log(err);
+        res.writeHead(config.STATUS.INTERNAL_ERROR, {
+          "Content-Type": "text/plain",
+        });
+        res.end("Failed to execute SQL.");
+      }
+    });
+
+    req.on("error", (err) => {
+      console.log(err);
+      res.writeHead(config.STATUS.INTERNAL_ERROR, {
+        "Content-Type": "text/plain",
+      });
+      res.end("Request body error.");
+    });
   };
 
   // Set the headers for CORS in the http server
