@@ -14,7 +14,8 @@ class Client {
     // Select the root element
     this.element = document.getElementById(HTML.ID.ROOT);
 
-    // Create the elements
+    // Create the elementsError: ${err.message}
+
     this.sqlForm = ElementFactory.createSqlForm();
     this.dataButton = ElementFactory.createDataButton();
     this.message = ElementFactory.createMessage();
@@ -38,6 +39,7 @@ class Client {
 
       // Get the text area contents
       const input = this.sqlForm.textArea.value.toUpperCase();
+      console.log("Input:", input)
 
       // Check if it is a SELECT or INSERT query
       const isSelectQuery = input.includes(SQL.KEYWORD.SELECT)
@@ -92,8 +94,8 @@ class Client {
       const result = await res.text();
       this.message.textContent = result;
     } catch (err) {
-      console.error("Error:", err);
-      this.message.textContent = `Error: ${err.message}`;
+      console.error(err);
+      this.message.textContent = err.message;
     }
   }
 
