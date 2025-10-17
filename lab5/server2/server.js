@@ -1,7 +1,7 @@
 const http = require("http");
 const url = require("url");
-const Database = require("./src/js/Database")
-const fs = require("fs")
+const Database = require("./src/js/Database");
+const fs = require("fs");
 
 // Server configuraion constants
 const config = require("./src/js/config");
@@ -44,38 +44,71 @@ class Server {
   }
 
   handleInsertSqlButton = async (req, res) => {
-    debugger
     if (req.method != config.REQUEST_TYPE.POST) {
-      res.writeHead(config.STATUS.METHOD_NOT_ALLOWED, {"Content-Type": "text/json"});
+      res.writeHead(config.STATUS.METHOD_NOT_ALLOWED, {
+        "Content-Type": "text/json",
+      });
       res.end(`${req.method} not allowed at ${req.url}`);
       return;
     }
 
     try {
-      const sql = fs.readFileSync(path.join(__dirname, "insertData.txt"), "utf-8");
+      const sql = fs.readFileSync(
+        path.join(__dirname, "insertData.txt"),
+        "utf-8"
+      );
+
       this.database.connection.query(sql, (err, res) => {
-        if (err){
-          throw err
+        if (err) {
+          throw err;
         }
-        console.log(res)
+        console.log(res);
       });
       res.writeHead(config.STATUS.OK);
       res.end("Predefined data inserted successfully");
     } catch (err) {
       console.log(err);
-      res.writeHead(config.STATUS.INTERNAL_ERROR, {"Content-Type": "text/json"});
-      res.end("Failed to insert predefined data.")
+      res.writeHead(config.STATUS.INTERNAL_ERROR, {
+        "Content-Type": "text/json",
+      });
+      res.end("Failed to insert predefined data.");
     }
   };
 
   // Handle the request that inserts into the api database using sql
   handleSqlInsert = (req, res) => {
-    if (req.method != config.REQUEST_TYPE.GET) {
-      res.writeHead(config.STATUS.METHOD_NOT_ALLOWED, {"Content-Type": "text/json"});
+    console.log(req.url);
+    // api/db/insert
+
+    if (req.method != config.REQUEST_TYPE.POST) {
+      res.writeHead(config.STATUS.METHOD_NOT_ALLOWED, {
+        "Content-Type": "text/json",
+      });
+
       res.end(`${req.method} not allowed at ${req.url}`);
       return;
     }
-    res.end("GET response from server");
+
+    try {
+      const sql = req.sql;
+      this.database.connection.query(sql, (err, result) => {
+        if (err) {
+          throw err;
+        }
+        console.log(result);
+      });
+
+      res.writeHead(config.STATUS.OK);
+      res.end(`${sql} executed.`);
+    } catch (err) {
+      console.log(err);
+      res.writeHead(config.STATUS.INTERNAL_ERROR, {
+        "Content-Type": "text/json",
+      });
+      res.end("Failed to insert predefined data.");
+    }
+
+    res.end("POST response from server");
   };
 
   // Handle the request that selects data from the api database using sql
