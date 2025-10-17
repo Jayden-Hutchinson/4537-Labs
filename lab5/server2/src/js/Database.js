@@ -5,11 +5,10 @@ class Database {
     this.connection = mysql.createConnection({
       host: "localhost",
       user: "root",
-      password: "", // taking away password
+      password: "4537",
       database: "4537lab5",
     });
 
-    // Establish the connection (optional for mysql2, but explicit is fine)
     this.connection.connect((err) => {
       if (err) throw err;
       console.log("Connected to Database");
