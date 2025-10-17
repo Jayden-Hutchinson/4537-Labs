@@ -26,7 +26,22 @@ export const HTML = {
   },
 };
 
-export const REQUEST_TYPE = {
-  GET: "GET",
-  POST: "POST",
-};
+export const SQL = {
+  KEYWORD: {
+    INSERT: "INSERT",
+    SELECT: "SELECT"
+  }
+}
+
+export const HTTP = {
+  REQUEST_TYPE: {
+    GET: "GET",
+    POST: "POST",
+  }
+}
+
+const BASE_URL = "http://localhost:3000/api/db"
+export const SERVER_ROUTE = {
+  SELECT: `${BASE_URL}/select`,
+  INSERT: `${BASE_URL}/insert`,
+}

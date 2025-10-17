@@ -1,15 +1,15 @@
 import { UI_TEXT } from "../lang/en/user.js";
-import { HTML, REQUEST_TYPE } from "./util/constants.js";
+import { HTML, HTTP } from "./util/constants.js";
 
 class ElementFactory {
   static createSqlForm() {
     const form = document.createElement(HTML.TAG.FORM);
     form.className = HTML.CLASS_NAME.SQL_FORM;
-    form.method = REQUEST_TYPE.POST;
+    form.method = HTTP.REQUEST_TYPE.POST;
 
     form.textArea = document.createElement(HTML.TAG.TEXT_AREA);
     form.textArea.placeHolder = UI_TEXT.textAreaPlaceholder;
-    
+
     const submitButton = document.createElement(HTML.TAG.BUTTON);
     submitButton.textContent = UI_TEXT.submitButton;
     submitButton.type = HTML.TYPE.SUBMIT;
