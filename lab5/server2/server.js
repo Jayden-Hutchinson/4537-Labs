@@ -4,6 +4,7 @@ const Database = require("./src/js/Database")
 
 // Server configuraion constants
 const config = require("./src/js/config");
+const path = require("path");
 
 class Server {
   constructor() {
@@ -40,10 +41,29 @@ class Server {
       .listen(config.PORT, () => console.log(config.listenMessage));
   }
 
+  handleInsertSqlButton = async (req, res) => {
+    if (req.method != config.REQUEST_TYPE.POST) {
+      res.writeHead(config.STATUS.METHOD_NOT_ALLOWED, {"Content-Type": "text/plain"});
+      res.end(`${req.method} not allowed at ${req.url}`);
+      return;
+    }
+
+    try {
+      const sql = fs.readFileSync(path.join(__dirname, "insertData.sql"), "utf-8");
+      await this.database.query(sql);
+      res.writeHead(config.STATUS.OK);
+      res.end("Predefined data inserted successfully");
+    } catch (err) {
+      console.log(err);
+      res.writeHead(config.STATUS.INTERNAL_ERROR, {"Content-Type": "text/plain"});
+      res.end("Failed to insert predefined data.")
+    }
+  };
+
   // Handle the request that inserts into the api database using sql
   handleSqlInsert = (req, res) => {
     if (req.method != config.REQUEST_TYPE.GET) {
-      res.writeHead(config.STATUS.METHOD_NOT_ALLOWED);
+      res.writeHead(config.STATUS.METHOD_NOT_ALLOWED, {"Content-Type": "text/plain"});
       res.end(`${req.method} not allowed at ${req.url}`);
       return;
     }
