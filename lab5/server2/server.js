@@ -1,11 +1,11 @@
 const http = require("http");
-const url = require("url");
 const Database = require("./src/js/Database");
 const fs = require("fs");
 
 // Server configuraion constants
 const config = require("./src/js/config");
 const path = require("path");
+const { connected } = require("process");
 
 class Server {
   constructor() {
@@ -15,7 +15,7 @@ class Server {
     // Handle the request received from the client based on the url
     this.handlers = {
       [config.ENDPOINT.INSERT]: this.handleSqlInsert,
-      [config.ENDPOINT.PREDEF_DATA]: this.handleInsertSqlButton,
+      [config.ENDPOINT.INSERT_DATA]: this.handleSqlInsertData,
       [config.ENDPOINT.SELECT]: this.handleSqlSelect,
     };
 
@@ -48,35 +48,41 @@ class Server {
       .listen(config.PORT, () => console.log(config.listenMessage));
   }
 
-  handleInsertSqlButton = async (req, res) => {
+  handleSqlInsertData = async (req, res) => {
     if (req.method != config.REQUEST_TYPE.POST) {
       res.writeHead(config.STATUS.METHOD_NOT_ALLOWED, {
-        "Content-Type": "text/json",
+        "Content-Type": "text/plain",
       });
       res.end(`${req.method} not allowed at ${req.url}`);
       return;
     }
 
     try {
-      const sql = fs.readFileSync(
-        path.join(__dirname, "insertData.txt"),
-        "utf-8"
-      );
+      const sql = fs.readFileSync(config.INSERT_DATA_PATH, "utf-8");
+      console.log("insert_data.sql:\n", sql);
 
-      this.database.connection.query(sql, (err, res) => {
+      this.database.connection.query(sql, (err, result) => {
         if (err) {
-          throw err;
+          console.log("SQL Error:", err);
+          res.writeHead(config.STATUS.INTERNAL_ERROR, {
+            "Content-Type": "text/plain",
+          });
+          res.end(err.message);
+          return;
         }
-        console.log(res);
+
+        console.log("Query Result:", result);
+        res.writeHead(config.STATUS.OK, {
+          "Content-Type": "text/plain",
+        });
+        res.end("Data inserted successfully");
       });
-      res.writeHead(config.STATUS.OK);
-      res.end("Predefined data inserted successfully");
     } catch (err) {
-      console.log(err);
+      console.log("File Read Error:", err);
       res.writeHead(config.STATUS.INTERNAL_ERROR, {
-        "Content-Type": "text/json",
+        "Content-Type": "text/plain",
       });
-      res.end("Failed to insert predefined data.");
+      res.end("Failed to read SQL file.");
     }
   };
 
@@ -104,7 +110,6 @@ class Server {
 
         this.database.connection.query(sql, (err, result) => {
           if (err) {
-            console.log(err);
             res.writeHead(config.STATUS.INTERNAL_ERROR, {
               "Content-Type": "text/plain",
             });
@@ -117,6 +122,7 @@ class Server {
             "Content-Type": "text/plain",
           });
           res.end("SQL executed successfully.");
+          return;
         });
       } catch (err) {
         console.log(err);
@@ -124,6 +130,7 @@ class Server {
           "Content-Type": "text/plain",
         });
         res.end("Failed to execute SQL.");
+        return;
       }
     });
 
@@ -133,6 +140,7 @@ class Server {
         "Content-Type": "text/plain",
       });
       res.end("Request body error.");
+      return;
     });
   };
 
@@ -169,10 +177,12 @@ class Server {
           }
 
           console.log(result);
+
           res.writeHead(config.STATUS.OK, {
             "Content-Type": "text/plain",
           });
           res.end("SQL executed successfully.");
+          return;
         });
       } catch (err) {
         console.log(err);
@@ -180,6 +190,7 @@ class Server {
           "Content-Type": "text/plain",
         });
         res.end("Failed to execute SQL.");
+        return;
       }
     });
 
@@ -189,6 +200,7 @@ class Server {
         "Content-Type": "text/plain",
       });
       res.end("Request body error.");
+      return;
     });
   };
 

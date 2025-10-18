@@ -29,19 +29,20 @@ export const HTML = {
 export const SQL = {
   KEYWORD: {
     INSERT: "INSERT",
-    SELECT: "SELECT"
-  }
-}
+    SELECT: "SELECT",
+  },
+};
 
 export const HTTP = {
   REQUEST_TYPE: {
     GET: "GET",
     POST: "POST",
-  }
-}
+  },
+};
 
-const BASE_URL = "http://localhost:3000/api/db"
+const BASE_URL = "http://localhost:3000/api/db";
 export const SERVER_ROUTE = {
   SELECT: `${BASE_URL}/select`,
   INSERT: `${BASE_URL}/insert`,
-}
+  INSERT_DATA: `${BASE_URL}/insert/data`,
+};
