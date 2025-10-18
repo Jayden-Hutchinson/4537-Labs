@@ -28,7 +28,12 @@ const STATUS = Object.freeze({
   INTERNAL_ERROR: 500,
 });
 
-const INSERT_DATA_PATH = "./src/sql/insert_data.sql";
+const FILE = {
+  SQL: {
+    INSERT_DATA: "./src/sql/insert_data.sql",
+    CREATE_TABLE: "./src/sql/create_table.sql",
+  },
+};
 
 module.exports = {
   PORT,
@@ -37,5 +42,5 @@ module.exports = {
   REQUEST_TYPE,
   HEADERS,
   STATUS,
-  INSERT_DATA_PATH,
+  FILE
 };

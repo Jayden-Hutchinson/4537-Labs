@@ -1,17 +1,24 @@
 const mysql = require("mysql2");
+const CONNECTION = {
+  host: "localhost",
+  user: "jhutchin_root",
+  password: "4537lab5",
+  database: "jhutchin_4537lab5",
+  port: 3306,
+};
 
 class Database {
   constructor() {
-    this.connection = mysql.createConnection({
-      host: "localhost",
-      user: "root",
-      password: "4537",
-      database: "4537lab5",
-    });
+    this.connection = mysql.createConnection(CONNECTION);
 
     this.connection.connect((err) => {
-      if (err) throw err;
-      console.log("Connected to Database");
+      console.log("Connecting to Database...");
+      if (err) {
+        console.log("Connecting Failed.");
+        console.log(err);
+        return;
+      }
+      console.log("Connected to Database.");
     });
   }
 }

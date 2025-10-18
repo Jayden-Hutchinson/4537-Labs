@@ -1,11 +1,9 @@
 const http = require("http");
-const Database = require("./src/js/Database");
 const fs = require("fs");
+const Database = require("./src/js/Database");
 
 // Server configuraion constants
 const config = require("./src/js/config");
-const path = require("path");
-const { connected } = require("process");
 
 class Server {
   constructor() {
@@ -29,9 +27,13 @@ class Server {
         // Get the handler function for the request url
         const handler = this.handlers[req.url];
         console.log("Request Handler:", handler);
+        console.log(req.url);
 
-        // if no handler return a message
+        if (req.url === "/") {
+          res.end("Hello from the server");
+        }
         if (!handler) {
+          // if no handler return a message
           res.writeHead(config.STATUS.METHOD_NOT_ALLOWED);
           res.end("Method not allowed");
           return;
@@ -49,6 +51,7 @@ class Server {
   }
 
   handleSqlInsertData = async (req, res) => {
+    this.createTable();
     if (req.method != config.REQUEST_TYPE.POST) {
       res.writeHead(config.STATUS.METHOD_NOT_ALLOWED, {
         "Content-Type": "text/plain",
@@ -58,7 +61,7 @@ class Server {
     }
 
     try {
-      const sql = fs.readFileSync(config.INSERT_DATA_PATH, "utf-8");
+      const sql = fs.readFileSync(config.FILE.SQL.INSERT_DATA, "utf-8");
       console.log("insert_data.sql:\n", sql);
 
       this.database.connection.query(sql, (err, result) => {
@@ -88,6 +91,7 @@ class Server {
 
   // Handle the request that inserts into the api database using sql
   handleSqlInsert = (req, res) => {
+    this.createTable();
     if (req.method !== config.REQUEST_TYPE.POST) {
       res.writeHead(config.STATUS.METHOD_NOT_ALLOWED, {
         "Content-Type": "text/plain",
@@ -209,6 +213,27 @@ class Server {
     for (const [key, value] of Object.entries(config.HEADERS)) {
       res.setHeader(key, value);
     }
+  }
+
+  createTable() {
+    const sql = fs.readFileSync(config.FILE.SQL.CREATE_TABLE, "utf-8");
+    console.log("Creating Table...");
+
+    this.database.connection.query(sql, (err, result) => {
+      if (err) {
+        console.log("Creating Table Failed.", err);
+        return;
+      }
+
+      console.log("Table Created.");
+    });
+  }
+  catch(err) {
+    console.log("File Read Error:", err);
+    res.writeHead(config.STATUS.INTERNAL_ERROR, {
+      "Content-Type": "text/plain",
+    });
+    res.end("Failed to read SQL file.");
   }
 }
 
