@@ -1,14 +1,35 @@
 const http = require("http");
 const fs = require("fs");
-const Database = require("./src/js/Database");
+const mysql = require("mysql2");
+require("dotenv").config();
 
 // Server configuraion constants
 const config = require("./src/js/config");
+const PORT = process.env.PORT;
+
+const CONNECTION = {
+  host: process.env.DB_HOST, // your hosting DB host
+  user: process.env.DB_USER, // your DB username
+  password: process.env.DB_PASS, // your DB password
+  database: process.env.DB_NAME, // your DB name
+  port: process.env.DB_PORT || 3306,
+};
 
 class Server {
   constructor() {
     // MySql database connection
-    this.database = new Database();
+    this.db = mysql.createConnection(CONNECTION);
+
+    this.db.connect((err) => {
+      console.log("Connecting to Database...");
+      console.log(CONNECTION);
+      if (err) {
+        console.log("Connecting Failed.");
+        console.log(err);
+        return;
+      }
+      console.log(`Connected to Database on port ${CONNECTION.port}`);
+    });
 
     // Handle the request received from the client based on the url
     this.handlers = {
@@ -21,7 +42,6 @@ class Server {
     http
       .createServer((req, res) => {
         console.log("Request URL:", req.url);
-
         this.setHeaders(res);
 
         // Get the handler function for the request url
@@ -29,9 +49,17 @@ class Server {
         console.log("Request Handler:", handler);
         console.log(req.url);
 
-        if (req.url === "/") {
+        if (req.url === "/COMP4537/labs/5") {
           res.end("Hello from the server");
+          return;
         }
+
+        if (req.url === "/favicon.ico") {
+          res.writeHead(204); // 204 = No Content
+          res.end();
+          return;
+        }
+
         if (!handler) {
           // if no handler return a message
           res.writeHead(config.STATUS.METHOD_NOT_ALLOWED);
@@ -47,24 +75,26 @@ class Server {
         // handle the request with the chosen handler function
         handler(req, res);
       })
-      .listen(config.PORT, () => console.log(config.listenMessage));
+      .listen(PORT, () =>
+        console.log(`Server running on http://localhost:${PORT}`)
+      );
   }
 
   handleSqlInsertData = async (req, res) => {
     this.createTable();
-    if (req.method != config.REQUEST_TYPE.POST) {
-      res.writeHead(config.STATUS.METHOD_NOT_ALLOWED, {
-        "Content-Type": "text/plain",
-      });
-      res.end(`${req.method} not allowed at ${req.url}`);
-      return;
-    }
+    // if (req.method != config.REQUEST_TYPE.POST) {
+    //   res.writeHead(config.STATUS.METHOD_NOT_ALLOWED, {
+    //     "Content-Type": "text/plain",
+    //   });
+    //   res.end(`${req.method} not allowed at ${req.url}`);
+    //   return;
+    // }
 
     try {
       const sql = fs.readFileSync(config.FILE.SQL.INSERT_DATA, "utf-8");
       console.log("insert_data.sql:\n", sql);
 
-      this.database.connection.query(sql, (err, result) => {
+      this.db.query(sql, (err, result) => {
         if (err) {
           console.log("SQL Error:", err);
           res.writeHead(config.STATUS.INTERNAL_ERROR, {
@@ -92,6 +122,9 @@ class Server {
   // Handle the request that inserts into the api database using sql
   handleSqlInsert = (req, res) => {
     this.createTable();
+    console.log(req);
+    console.log(req.method);
+
     if (req.method !== config.REQUEST_TYPE.POST) {
       res.writeHead(config.STATUS.METHOD_NOT_ALLOWED, {
         "Content-Type": "text/plain",
@@ -112,7 +145,7 @@ class Server {
 
         console.log("Received SQL:", sql);
 
-        this.database.connection.query(sql, (err, result) => {
+        this.db.query(sql, (err, result) => {
           if (err) {
             res.writeHead(config.STATUS.INTERNAL_ERROR, {
               "Content-Type": "text/plain",
@@ -170,7 +203,7 @@ class Server {
 
         console.log("Received SQL:", sql);
 
-        this.database.connection.query(sql, (err, result) => {
+        this.db.query(sql, (err, result) => {
           if (err) {
             console.log(err);
             res.writeHead(config.STATUS.INTERNAL_ERROR, {
@@ -219,7 +252,7 @@ class Server {
     const sql = fs.readFileSync(config.FILE.SQL.CREATE_TABLE, "utf-8");
     console.log("Creating Table...");
 
-    this.database.connection.query(sql, (err, result) => {
+    this.db.query(sql, (err, result) => {
       if (err) {
         console.log("Creating Table Failed.", err);
         return;
