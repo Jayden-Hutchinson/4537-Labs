@@ -1,12 +1,6 @@
-import { HTML, HTTP, SERVER_ROUTE, SQL } from "./util/constants.js";
-import { MESSAGE } from "../lang/en/user.js";
-import ElementFactory from "./ElementFactory.js";
-
-const SQL_DATA = `INSERT INTO patient (name, dateOfBirth) VALUES
-("Kratos", "2005-03-22"),
-("Nathan Drake", "2007-10-13"),
-("Cole MacGrath", "2009-11-01"),
-("Ratchet", "2002-11-04")`;
+import { HTML, HTTP, SERVER_ROUTE, SQL } from "./src/js/util/constants.js";
+import { MESSAGE } from "./src/lang/en/user.js";
+import ElementFactory from "./src/js/ElementFactory.js";
 
 class Client {
   constructor() {

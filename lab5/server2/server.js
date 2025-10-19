@@ -21,7 +21,6 @@ class Server {
     http
       .createServer((req, res) => {
         console.log("Request URL:", req.url);
-
         this.setHeaders(res);
 
         // Get the handler function for the request url
@@ -32,6 +31,7 @@ class Server {
         if (req.url === "/") {
           res.end("Hello from the server");
         }
+
         if (!handler) {
           // if no handler return a message
           res.writeHead(config.STATUS.METHOD_NOT_ALLOWED);
