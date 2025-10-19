@@ -1,14 +1,35 @@
 const http = require("http");
 const fs = require("fs");
-const Database = require("./src/js/Database");
+const mysql = require("mysql2");
+require("dotenv").config();
 
 // Server configuraion constants
 const config = require("./src/js/config");
+const PORT = process.env.PORT;
+
+const CONNECTION = {
+  host: process.env.DB_HOST, // your hosting DB host
+  user: process.env.DB_USER, // your DB username
+  password: process.env.DB_PASS, // your DB password
+  database: process.env.DB_NAME, // your DB name
+  port: process.env.DB_PORT || 3306,
+};
 
 class Server {
   constructor() {
     // MySql database connection
-    this.database = new Database();
+    this.db = mysql.createConnection(CONNECTION);
+
+    this.db.connect((err) => {
+      console.log("Connecting to Database...");
+      console.log(CONNECTION);
+      if (err) {
+        console.log("Connecting Failed.");
+        console.log(err);
+        return;
+      }
+      console.log(`Connected to Database on port ${CONNECTION.port}`);
+    });
 
     // Handle the request received from the client based on the url
     this.handlers = {
@@ -47,7 +68,9 @@ class Server {
         // handle the request with the chosen handler function
         handler(req, res);
       })
-      .listen(config.PORT, () => console.log(config.listenMessage));
+      .listen(PORT, () =>
+        console.log(`Server running on http://localhost:${PORT}`)
+      );
   }
 
   handleSqlInsertData = async (req, res) => {

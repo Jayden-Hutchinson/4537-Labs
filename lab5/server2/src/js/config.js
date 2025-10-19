@@ -1,6 +1,3 @@
-const PORT = 3000;
-const listenMessage = `Server running on http://localhost:${PORT}`;
-
 const ENDPOINT = {
   INSERT: "/api/db/insert",
   SELECT: "/api/db/select",
@@ -36,11 +33,9 @@ const FILE = {
 };
 
 module.exports = {
-  PORT,
-  listenMessage,
   ENDPOINT,
   REQUEST_TYPE,
   HEADERS,
   STATUS,
-  FILE
+  FILE,
 };
