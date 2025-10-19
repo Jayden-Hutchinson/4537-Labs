@@ -32,7 +32,7 @@ class Client {
 
       // Get the text area contents
       const input = this.sqlForm.textArea.value;
-      debugger
+    
       // Check if it is a SELECT or INSERT query
       const isSelectQuery = input.includes(SQL.KEYWORD.SELECT);
       const isInsertQuery = input.includes(SQL.KEYWORD.INSERT);

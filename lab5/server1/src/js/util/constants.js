@@ -40,7 +40,7 @@ export const HTTP = {
   },
 };
 
-const BASE_URL = "https://j-hutchinson.com/COMP4537/labs/5/api/db";
+const BASE_URL = "https://j-hutchinson.com/COMP4537/labs/5";
 export const SERVER_ROUTE = {
   SELECT: `${BASE_URL}/api/db/select`,
   INSERT: `${BASE_URL}/api/db/insert`,
