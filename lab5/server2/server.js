@@ -53,6 +53,12 @@ class Server {
           res.end("Hello from the server");
         }
 
+        if (req.url === "/favicon.ico") {
+          res.writeHead(204); // 204 = No Content
+          res.end();
+          return;
+        }
+
         if (!handler) {
           // if no handler return a message
           res.writeHead(config.STATUS.METHOD_NOT_ALLOWED);
