@@ -1,7 +1,8 @@
+const BASE_URL = "/COMP4537/labs/5";
 const ENDPOINT = {
-  INSERT: "/api/db/insert",
-  SELECT: "/api/db/select",
-  INSERT_DATA: "/api/db/insert/data",
+  INSERT: `${BASE_URL}/api/db/insert`,
+  SELECT: `${BASE_URL}/api/db/select`,
+  INSERT_DATA: `${BASE_URL}/api/db/insert/data`,
 };
 
 const REQUEST_TYPE = Object.freeze({
