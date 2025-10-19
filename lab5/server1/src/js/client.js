@@ -103,7 +103,7 @@ class Client {
    *
    * @param {string} sql
    */
-  async selectSql(sql) {
+  async selectSql() {
     console.log("Reading Data");
     try {
       const res = await fetch(SERVER_ROUTE.SELECT, {
